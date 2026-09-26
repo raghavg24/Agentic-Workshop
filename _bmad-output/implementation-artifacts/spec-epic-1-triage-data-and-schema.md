@@ -38,3 +38,20 @@ context: []
 | 6 | Silent success violates expectation | false | Global rules require no terminal output on success |
 | 7 | Missing linting tools in dev deps | defer | Out of Epic 1 scope; added to deferred-work.md |
 | 8 | CSV column names assumed in tests | false | Test column names exactly match actual CSV headers (confirmed by inspection) |
+
+### Review Findings
+
+- [ ] [Review][Patch] .env.example deletion removes setup instructions [.env.example] — file contained "Copy this file to .env and fill in your keys" + all required key names (GEMINI_API_KEY, GROQ_API_KEY) + optional overrides; new contributors have no template
+
+**Rejected:**
+
+- BH-2 (false): Schema cross-field validation — spec requires per-field validation only; cross-field consistency is the agent's responsibility, not the schema's
+- BH-3 (false): SQL injection via f-string table names — table names are hardcoded string literals in `main()`; no user input path reaches `_load_table`
+- BH-4 (false): `test_ticket_t1042_present` hardcodes `"C-77"` — seed is read-only per AGENTS.md; the value is stable and correct
+- BH-5 (false): No logger/tracing hook — global rules mandate silent output on success; loader is a standalone script, not a library
+- BH-6 (rejected): Triage log doesn't cite code locations — fix would require editing the spec under review
+- BH-7 (low, rejected): No malformed CSV handling — seed is read-only; malformed CSV is unreachable in everyday use; fix adds unnecessary guards
+- ECH-1 (false): CSV file not found → silent failure — `open()` raises `FileNotFoundError` with full path; failure is not silent
+- ECH-2 (false): CSV row missing column → incomplete rows — `csv.DictReader` fills missing columns with `None`; seed is consistent and read-only
+- ECH-3 (false): Test seed file not found → unclear error — `open()` raises `FileNotFoundError` with path; seed is always present
+- ECH-4 (low, rejected): Commit message says ".env.example was empty" — cosmetic wording in git history; cannot be amended; grouped root cause covered by the patch finding above
