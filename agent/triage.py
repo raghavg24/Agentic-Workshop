@@ -64,14 +64,14 @@ async def triage(ticket_id: str) -> dict:
     for attempt in range(2):
         config = {"configurable": {"thread_id": f"{ticket_id}-{attempt}"}}
         try:
-            result = agent.invoke(
+            result = await agent.ainvoke(
                 {"messages": [{"role": "user", "content": f"Triage ticket {ticket_id}."}]},
                 config=config,
             )
 
             if not auto_approve and "__interrupt__" in result:
                 answer = input(f"\n[ESCALATION] Approve escalation for {ticket_id}? [yes/no]: ").strip().lower()
-                result = agent.invoke(
+                result = await agent.ainvoke(
                     Command(resume={"decisions": [{"type": "approve" if answer == "yes" else "reject"}]}),
                     config=config,
                 )

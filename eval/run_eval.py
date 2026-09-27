@@ -41,11 +41,11 @@ def _load_data() -> list[dict]:
 
 
 @mlflow.trace(name="triage_ticket", span_type="AGENT")
-def predict(inputs: dict) -> dict:
+def predict(ticket_id: str) -> dict:
     os.environ["AUTO_APPROVE_ESCALATION"] = "1"
     try:
         from agent import triage
-        return asyncio.run(triage(inputs["ticket_id"]))
+        return asyncio.run(triage(ticket_id))
     finally:
         os.environ.pop("AUTO_APPROVE_ESCALATION", None)
 
