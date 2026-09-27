@@ -1,0 +1,26 @@
+- id: "1"
+  title: Seed loader and SQLite schema
+  description: >-
+    Implement load_seed.py to create 5 tables (expense_claims, expense_line_items,
+    expense_employees, expense_limits, expense_decisions) and populate the first 4
+    from seed/ CSVs using INSERT OR REPLACE. Covers CAP-1.
+  spec_checkpoint: false
+  done_checkpoint: false
+  invoke_dev_with: >-
+    DB path must be derived from __file__ (not cwd). Re-runs must be idempotent.
+    expense_decisions starts empty — do not seed it. Print row counts on success,
+    nothing else.
+
+- id: "2"
+  title: MCP server with 4 tools
+  description: >-
+    Implement mcp_server.py using FastMCP over stdio, exposing get_claim,
+    get_employee, get_policy_limits, and record_decision against the seeded SQLite DB.
+    Covers CAP-2 including the hard-error constraints on empty limits and invalid decisions.
+  spec_checkpoint: false
+  done_checkpoint: false
+  invoke_dev_with: >-
+    get_policy_limits must raise ValueError on empty result — not return {}.
+    record_decision must reject decisions outside {approve, flag, reject}.
+    DB path derived from __file__. Transport is stdio (FastMCP server.run()).
+    Verify all 4 tools callable via langchain-mcp-adapters without error.
